@@ -329,19 +329,26 @@ do_tools() {
 function do_network() {
   echo "----- Network Configuration -----"
 
-  # Backup the existing /etc/network/interfaces before changes
-  mkdir -p "$BACKUP_DIR"
-  if [ -f /etc/network/interfaces ]; then
-    echo "Backing up /etc/network/interfaces to $BACKUP_DIR/network_interfaces.bak"
-    cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
-  fi
-
   local VIRTUALIZATION
   VIRTUALIZATION=$(sudo dmidecode | grep -i product | grep -E "VirtualBox|VMware" || true)
 
+  # Only proceed if this is a VirtualBox environment
   if echo "$VIRTUALIZATION" | grep -iq "VirtualBox"; then
-    echo "VirtualBox detected. Configuring network interfaces..."
-    sudo tee -a /etc/network/interfaces <<EOF
+    echo "VirtualBox detected. Checking /etc/network/interfaces for existing block..."
+
+    # Check if we've already appended the block for eth1 to avoid duplicates
+    if ! grep -Fq "auto eth1" /etc/network/interfaces; then
+      echo "No 'auto eth1' line found. Backing up and appending block..."
+
+      # Backup the existing /etc/network/interfaces before changes
+      mkdir -p "$BACKUP_DIR"
+      if [ -f /etc/network/interfaces ]; then
+        echo "Backing up /etc/network/interfaces to $BACKUP_DIR/network_interfaces.bak"
+        cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
+      fi
+
+      # Append new lines for VirtualBox NAT
+      sudo tee -a /etc/network/interfaces <<EOF
 
 # Primary network interface
 auto eth0
@@ -351,9 +358,14 @@ iface eth0 inet dhcp
 auto eth1
 iface eth1 inet dhcp
 EOF
+      echo "Appended VirtualBox network block to /etc/network/interfaces."
 
-    echo "Restarting network services..."
-    sudo systemctl restart networking.service
+      echo "Restarting network services..."
+      sudo systemctl restart networking.service
+    else
+      echo "It appears the VirtualBox block is already in /etc/network/interfaces."
+      echo "Skipping backup and append."
+    fi
   else
     echo "VMware or no virtualization detected. Skipping network configuration..."
   fi
@@ -428,7 +440,7 @@ function do_zsh_restore() {
     echo "Restoring .zshrc from backup..."
     cp "$BACKUP_DIR/zshrc.bak" "$ZSHRC_DEST"
     chown "$CURRENT_USER":"$CURRENT_USER" "$ZSHRC_DEST"
-    # You can optionally re-source it now:
+    # Optionally re-source it
     sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
   else
     echo "No .zshrc backup found at $BACKUP_DIR/zshrc.bak."
