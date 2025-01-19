@@ -30,9 +30,31 @@ ZSH_UPDATE=false
 DO_ALL=false
 
 function usage() {
-  grep '^# ' "$0" | sed 's/^# //'
+cat <<EOF
+Usage:
+  sudo ./kali_setup.sh [OPTIONS]
+
+Options:
+  --pmpk        Only run PimpmyKali setup (N -> Y).
+  --repos       Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
+  --tools       Only install the additional tools.
+  --network     Only configure network (VirtualBox detection).
+  --zsh         Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
+  --all         Run all of the above steps.
+  -h, --help    Show this help message and exit.
+
+Examples:
+  sudo ./kali_setup.sh --pmpk
+  sudo ./kali_setup.sh --repos --zsh
+  sudo ./kali_setup.sh --all
+EOF
   exit 0
 }
+
+# If user runs the script with no arguments, show usage and exit
+if [ $# -eq 0 ]; then
+  usage
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -73,7 +95,7 @@ done
 # If --all is chosen, set all flags to true
 if [ "$DO_ALL" = true ]; then
   PMPK=true
-  REPOS=true        # <-- Make sure REPOS is set to true under --all
+  REPOS=true
   TOOLS=true
   NETWORK=true
   ZSH_UPDATE=true
