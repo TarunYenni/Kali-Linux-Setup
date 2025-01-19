@@ -4,17 +4,20 @@
 #   sudo ./kali_setup.sh [OPTIONS]
 #
 # Options:
-#   --pmpk        Only run PimpmyKali setup (N -> Y).
-#   --repos       Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
-#   --tools       Only install the additional tools.
-#   --network     Only configure network (VirtualBox detection).
-#   --zsh         Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
-#   --all         Run all of the above steps.
-#   -h, --help    Show this help message and exit.
+#   --pmpk             Only run PimpmyKali setup (N -> Y).
+#   --repos            Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
+#   --tools            Only install the additional tools.
+#   --network          Only configure network (VirtualBox detection).
+#   --zsh              Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
+#   --network-restore  Restore /etc/network/interfaces from a previous backup.
+#   --zsh-restore      Restore the original .zshrc from a previous backup.
+#   --all              Run all install/modify steps (pmpk, repos, tools, network, zsh).
+#   -h, --help         Show this help message and exit.
 #
 # Examples:
 #   sudo ./kali_setup.sh --pmpk
 #   sudo ./kali_setup.sh --repos --zsh
+#   sudo ./kali_setup.sh --network-restore
 #   sudo ./kali_setup.sh --all
 #
 
@@ -29,23 +32,29 @@ NETWORK=false
 ZSH_UPDATE=false
 DO_ALL=false
 
+NETWORK_RESTORE=false
+ZSH_RESTORE=false
+
 function usage() {
 cat <<EOF
 Usage:
   sudo ./kali_setup.sh [OPTIONS]
 
 Options:
-  --pmpk        Only run PimpmyKali setup (N -> Y).
-  --repos       Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
-  --tools       Only install the additional tools.
-  --network     Only configure network (VirtualBox detection).
-  --zsh         Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
-  --all         Run all of the above steps.
-  -h, --help    Show this help message and exit.
+  --pmpk             Only run PimpmyKali setup (N -> Y).
+  --repos            Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
+  --tools            Only install the additional tools.
+  --network          Only configure network (VirtualBox detection).
+  --zsh              Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
+  --network-restore  Restore /etc/network/interfaces from a previous backup.
+  --zsh-restore      Restore the original .zshrc from a previous backup.
+  --all              Run all install/modify steps (pmpk, repos, tools, network, zsh).
+  -h, --help         Show this help message and exit.
 
 Examples:
   sudo ./kali_setup.sh --pmpk
   sudo ./kali_setup.sh --repos --zsh
+  sudo ./kali_setup.sh --network-restore
   sudo ./kali_setup.sh --all
 EOF
   exit 0
@@ -78,6 +87,14 @@ while [[ $# -gt 0 ]]; do
       ZSH_UPDATE=true
       shift
       ;;
+    --network-restore)
+      NETWORK_RESTORE=true
+      shift
+      ;;
+    --zsh-restore)
+      ZSH_RESTORE=true
+      shift
+      ;;
     --all)
       DO_ALL=true
       shift
@@ -92,7 +109,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# If --all is chosen, set all flags to true
+# If --all is chosen, set all flags to true (except the restore flags remain independent)
 if [ "$DO_ALL" = true ]; then
   PMPK=true
   REPOS=true
@@ -108,6 +125,8 @@ fi
 REPO_URL="https://github.com/Dewalt-arch/pimpmykali.git"
 INSTALL_DIR="/opt/pimpmykali"
 CURRENT_USER=$(logname)
+
+BACKUP_DIR="/opt/restore_configuration_kali"
 
 # Private Repos
 SOLVED_BOXES_REPO="github.com/TarunYenni/Solved_Boxes_Data"
@@ -190,7 +209,6 @@ clone_private_repo() {
         cd "$DEST_DIR" && sudo -u "$CURRENT_USER" git pull
     else
         echo "Cloning the private repository into $DEST_DIR..."
-        # Use 'bash -c' with full quoting in case token has special characters.
         sudo -u "$CURRENT_USER" bash -c "git clone 'https://$GITHUB_USERNAME:$GITHUB_TOKEN@$REPO_URL' '$DEST_DIR'"
     fi
 }
@@ -305,11 +323,19 @@ do_tools() {
 }
 
 ###############################################################################
-# 10. Network Configuration (VirtualBox Check)
+# 10. Network Configuration + Restore
 ###############################################################################
 
-do_network() {
+function do_network() {
   echo "----- Network Configuration -----"
+
+  # Backup the existing /etc/network/interfaces before changes
+  mkdir -p "$BACKUP_DIR"
+  if [ -f /etc/network/interfaces ]; then
+    echo "Backing up /etc/network/interfaces to $BACKUP_DIR/network_interfaces.bak"
+    cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
+  fi
+
   local VIRTUALIZATION
   VIRTUALIZATION=$(sudo dmidecode | grep -i product | grep -E "VirtualBox|VMware" || true)
 
@@ -333,16 +359,38 @@ EOF
   fi
 }
 
+function do_network_restore() {
+  echo "----- Restoring Network Configuration -----"
+  if [ -f "$BACKUP_DIR/network_interfaces.bak" ]; then
+    echo "Restoring /etc/network/interfaces from backup..."
+    cp "$BACKUP_DIR/network_interfaces.bak" /etc/network/interfaces
+    echo "Restarting network services..."
+    sudo systemctl restart networking.service
+  else
+    echo "No backup file found at $BACKUP_DIR/network_interfaces.bak."
+    echo "Cannot restore network configuration."
+  fi
+}
+
 ###############################################################################
-# 11. Zsh Configuration
+# 11. Zsh Configuration + Restore
 ###############################################################################
 
-do_zsh() {
+function do_zsh() {
   echo "----- Zsh Configuration -----"
   local ZSH_HISTORY_SOURCE="$SOLVED_BOXES_DEST/final_combined_history_01_2025.txt"
   local ZSHRC_SOURCE="$SOLVED_BOXES_DEST/latest_zshrc_01_2025"
   local ZSH_HISTORY_DEST="/home/$CURRENT_USER/.zsh_history"
   local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
+
+  # Create backup dir if needed
+  mkdir -p "$BACKUP_DIR"
+
+  # If .zshrc exists, back it up before overwriting
+  if [ -f "$ZSHRC_DEST" ]; then
+    echo "Backing up $ZSHRC_DEST to $BACKUP_DIR/zshrc.bak"
+    cp "$ZSHRC_DEST" "$BACKUP_DIR/zshrc.bak"
+  fi
 
   # We need Solved_Boxes_Data for the zsh config. If not found, clone only that repo.
   if [ ! -d "$SOLVED_BOXES_DEST/.git" ]; then
@@ -373,6 +421,21 @@ do_zsh() {
   sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
 }
 
+function do_zsh_restore() {
+  echo "----- Restoring Zsh Configuration -----"
+  local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
+  if [ -f "$BACKUP_DIR/zshrc.bak" ]; then
+    echo "Restoring .zshrc from backup..."
+    cp "$BACKUP_DIR/zshrc.bak" "$ZSHRC_DEST"
+    chown "$CURRENT_USER":"$CURRENT_USER" "$ZSHRC_DEST"
+    # You can optionally re-source it now:
+    sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
+  else
+    echo "No .zshrc backup found at $BACKUP_DIR/zshrc.bak."
+    echo "Cannot restore zsh configuration."
+  fi
+}
+
 ###############################################################################
 # 12. Main Execution Flow
 ###############################################################################
@@ -397,9 +460,19 @@ if [ "$NETWORK" = true ]; then
   do_network
 fi
 
+# 4a) Network Restore
+if [ "$NETWORK_RESTORE" = true ]; then
+  do_network_restore
+fi
+
 # 5) Zsh
 if [ "$ZSH_UPDATE" = true ]; then
   do_zsh
+fi
+
+# 5a) Zsh Restore
+if [ "$ZSH_RESTORE" = true ]; then
+  do_zsh_restore
 fi
 
 ###############################################################################
@@ -423,11 +496,13 @@ echo "--------------------------------------------------------------------"
 echo "Script Execution Complete!"
 echo "--------------------------------------------------------------------"
 echo "Selected steps:"
-echo "  --repos:   $REPOS"
-echo "  --pmpk:    $PMPK"
-echo "  --tools:   $TOOLS"
-echo "  --network: $NETWORK"
-echo "  --zsh:     $ZSH_UPDATE"
-echo "  --all:     $DO_ALL"
+echo "  --repos:           $REPOS"
+echo "  --pmpk:            $PMPK"
+echo "  --tools:           $TOOLS"
+echo "  --network:         $NETWORK"
+echo "  --zsh:             $ZSH_UPDATE"
+echo "  --network-restore: $NETWORK_RESTORE"
+echo "  --zsh-restore:     $ZSH_RESTORE"
+echo "  --all:             $DO_ALL"
 echo "--------------------------------------------------------------------"
 echo "Done."
