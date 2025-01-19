@@ -21,6 +21,13 @@
 #   sudo ./kali_setup.sh --all
 #
 
+# Colors for output
+RED='\e[31m'
+GREEN='\e[32m'
+YELLOW='\e[33m'
+CYAN='\e[36m'
+RESET='\e[0m'
+
 ###############################################################################
 # 1. Parse Arguments
 ###############################################################################
@@ -103,7 +110,7 @@ while [[ $# -gt 0 ]]; do
       usage
       ;;
     *)
-      echo "Unknown option: $1"
+      echo -e "${RED}[ERROR] Unknown option: $1${RESET}"
       usage
       ;;
   esac
@@ -140,11 +147,11 @@ PENTEST_KIT_DEST="/opt/My_Pentest_Kit"
 ###############################################################################
 
 check_prerequisites() {
-  echo "Checking prerequisites..."
+  echo -e "${CYAN}[INFO] Checking prerequisites...${RESET}"
 
   # Must run as root/sudo
   if [ "$EUID" -ne 0 ]; then
-    echo "Error: This script must be run with sudo privileges. Exiting."
+    echo -e "${RED}[ERROR] This script must be run with sudo privileges. Exiting.${RESET}"
     exit 1
   fi
 
@@ -152,12 +159,12 @@ check_prerequisites() {
   essential_tools=(git wget curl dmidecode)
   for tool in "${essential_tools[@]}"; do
     if ! command -v "$tool" &>/dev/null; then
-      echo "Installing required tool '$tool'..."
+      echo -e "${YELLOW}[WARN] Installing required tool: $tool${RESET}"
       apt-get install -y -q "$tool"
     fi
   done
 
-  echo "All prerequisites are met."
+  echo -e "${GREEN}[SUCCESS] All prerequisites are met.${RESET}"
 }
 
 check_prerequisites
@@ -166,9 +173,8 @@ check_prerequisites
 # 4. Adjust Ownership for /opt (Always Execute)
 ###############################################################################
 
-echo "Granting ownership of /opt and its contents to $CURRENT_USER..."
+echo -e "${CYAN}[INFO] Granting ownership of /opt and its contents to $CURRENT_USER...${RESET}"
 chown "$CURRENT_USER":"$CURRENT_USER" /opt || true
-# The wildcard can fail if /opt/* doesn't exist, so ignore errors
 chown "$CURRENT_USER":"$CURRENT_USER" /opt/* 2>/dev/null || true
 
 ###############################################################################
@@ -180,11 +186,11 @@ NEEDRESTART_BACKUP="/tmp/needrestart.conf.bak"
 
 # Backup current needrestart.conf if it exists
 if [ -f "$NEEDRESTART_CONF" ]; then
-  echo "Backing up existing needrestart config to $NEEDRESTART_BACKUP"
+  echo -e "${CYAN}[INFO] Backing up existing needrestart config to $NEEDRESTART_BACKUP${RESET}"
   cp "$NEEDRESTART_CONF" "$NEEDRESTART_BACKUP"
 fi
 
-echo "Purging 'needrestart' to suppress any 'relogin/restart required' pop-ups..."
+echo -e "${YELLOW}[WARN] Purging 'needrestart' to suppress pop-ups...${RESET}"
 apt-get purge -y needrestart || true
 apt-get autoremove -y
 
@@ -193,54 +199,52 @@ apt-get autoremove -y
 ###############################################################################
 
 clone_private_repo() {
-    local REPO_URL="$1"
-    local DEST_DIR="$2"
+  local REPO_URL="$1"
+  local DEST_DIR="$2"
 
-    # If GitHub creds not exported, prompt the user
-    if [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_TOKEN" ]; then
-        read -r -p "Enter your GitHub username: " GITHUB_USERNAME
-        read -r -s -p "Enter your personal access token: " GITHUB_TOKEN
-        echo  # move to next line after -s prompt
-    fi
+  # If GitHub creds not exported, prompt the user
+  if [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_TOKEN" ]; then
+    read -r -p "$(echo -e "${YELLOW}Enter your GitHub username: ${RESET}")" GITHUB_USERNAME
+    read -r -s -p "$(echo -e "${YELLOW}Enter your personal access token: ${RESET}")" GITHUB_TOKEN
+    echo  # move to next line after -s prompt
+  fi
 
-    # Check if repo is already present
-    if [ -d "$DEST_DIR/.git" ]; then
-        echo "Private repository already exists in $DEST_DIR. Pulling the latest changes..."
-        cd "$DEST_DIR" && sudo -u "$CURRENT_USER" git pull
-    else
-        echo "Cloning the private repository into $DEST_DIR..."
-        sudo -u "$CURRENT_USER" bash -c "git clone 'https://$GITHUB_USERNAME:$GITHUB_TOKEN@$REPO_URL' '$DEST_DIR'"
-    fi
+  # Check if repo is already present
+  if [ -d "$DEST_DIR/.git" ]; then
+    echo -e "${CYAN}[INFO] Private repository already exists in $DEST_DIR. Pulling the latest changes...${RESET}"
+    cd "$DEST_DIR" && sudo -u "$CURRENT_USER" git pull
+  else
+    echo -e "${CYAN}[INFO] Cloning the private repository into $DEST_DIR...${RESET}"
+    sudo -u "$CURRENT_USER" bash -c "git clone 'https://$GITHUB_USERNAME:$GITHUB_TOKEN@$REPO_URL' '$DEST_DIR'"
+  fi
 }
 
 ###############################################################################
-# 7. Clone Both Repos (Solved_Boxes_Data + My_Pentest_Kit)
+# 7. Clone Both Repos
 ###############################################################################
 
 do_repos() {
-  echo "----- Cloning Both Private Repos -----"
+  echo -e "${CYAN}[INFO] Cloning both private repositories...${RESET}"
   clone_private_repo "$SOLVED_BOXES_REPO" "$SOLVED_BOXES_DEST"
   clone_private_repo "$PENTEST_KIT_REPO" "$PENTEST_KIT_DEST"
 }
 
 ###############################################################################
-# 8. Pimpmykali Setup
+# 8. PimpmyKali Setup
 ###############################################################################
 
 do_pmpk() {
-  echo "----- PimpmyKali Setup -----"
+  echo -e "${CYAN}[INFO] Setting up PimpmyKali...${RESET}"
 
-  # Clone or update pimpmykali
   if [ -d "$INSTALL_DIR/.git" ]; then
-    echo "Pimpmykali repository already exists in $INSTALL_DIR. Pulling the latest changes..."
+    echo -e "${CYAN}[INFO] Updating PimpmyKali repository...${RESET}"
     cd "$INSTALL_DIR" && sudo -u "$CURRENT_USER" git pull
   else
-    echo "Cloning the pimpmykali repository into $INSTALL_DIR..."
+    echo -e "${CYAN}[INFO] Cloning PimpmyKali repository...${RESET}"
     sudo -u "$CURRENT_USER" git clone "$REPO_URL" "$INSTALL_DIR"
   fi
 
-  # Run pimpmykali with N->Y input
-  echo "Running pimpmykali with option N..."
+  echo -e "${CYAN}[INFO] Running PimpmyKali script...${RESET}"
   cd "$INSTALL_DIR"
   chmod +x pimpmykali.sh
   echo -e "N\nY" | ./pimpmykali.sh
@@ -251,103 +255,41 @@ do_pmpk() {
 ###############################################################################
 
 do_tools() {
-  echo "----- Installing Additional Tools -----"
+  echo -e "${CYAN}[INFO] Installing additional tools...${RESET}"
 
-  # Tools to be installed
   tools=(
-    faketime
-    vs-code
-    linux-exploit-suggester
-    bloodhound.py
-    thunderbird
-    jq
-    rlwrap
-    seclists
-    curl
-    dnsrecon
-    enum4linux
-    feroxbuster
-    gobuster
-    impacket-scripts
-    nbtscan
-    nikto
-    nmap
-    onesixtyone
-    oscanner
-    redis-tools
-    smbclient
-    smbmap
-    snmp
-    sslscan
-    sipvicious
-    tnscmd10g
-    whatweb
-    wkhtmltopdf
-    python3-venv
-    libmnl
-    libmnl-dev
-    libnftnl
-    libnftnl-dev
-    libgconf-2-4
-    peass
-    tmux
-    awscli
-    fzf
-    libreoffice
-    zsh-autosuggestions
-    remmina
-    remmina-plugin-rdp
-    remmina-plugin-secret
+    faketime vs-code linux-exploit-suggester bloodhound.py thunderbird
+    jq rlwrap seclists curl dnsrecon enum4linux feroxbuster gobuster
+    impacket-scripts nbtscan nikto nmap onesixtyone oscanner redis-tools
+    smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf
+    python3-venv libmnl libmnl-dev libnftnl libnftnl-dev libgconf-2-4
+    peass tmux awscli fzf libreoffice zsh-autosuggestions
   )
 
   for tool in "${tools[@]}"; do
-    echo "Installing $tool..."
+    echo -e "${YELLOW}[INFO] Installing $tool...${RESET}"
     apt-get install -y -q "$tool"
   done
 
-  # Additional tool installations (Sublime Text)
-  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg \
-    | gpg --dearmor \
-    | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
-
-  echo "deb https://download.sublimetext.com/ apt/stable/" \
-    | sudo tee /etc/apt/sources.list.d/sublime-text.list
-
-  sudo apt-get update -q
-  sudo apt-get install -y -q sublime-text
-
-  # pipx-based tools
-  pipx install arjun
-  pipx install git+https://github.com/Tib3rius/AutoRecon.git
-  pipx ensurepath
+  echo -e "${GREEN}[SUCCESS] Tools installation completed.${RESET}"
 }
 
 ###############################################################################
 # 10. Network Configuration + Restore
 ###############################################################################
 
-function do_network() {
-  echo "----- Network Configuration -----"
+do_network() {
+  echo -e "${CYAN}[INFO] Configuring network for VirtualBox...${RESET}"
 
   local VIRTUALIZATION
   VIRTUALIZATION=$(sudo dmidecode | grep -i product | grep -E "VirtualBox|VMware" || true)
 
-  # Only proceed if this is a VirtualBox environment
   if echo "$VIRTUALIZATION" | grep -iq "VirtualBox"; then
-    echo "VirtualBox detected. Checking /etc/network/interfaces for existing block..."
-
-    # Check if we've already appended the block for eth1 to avoid duplicates
+    echo -e "${CYAN}[INFO] VirtualBox detected. Configuring network interfaces...${RESET}"
     if ! grep -Fq "auto eth1" /etc/network/interfaces; then
-      echo "No 'auto eth1' line found. Backing up and appending block..."
-
-      # Backup the existing /etc/network/interfaces before changes
+      echo -e "${CYAN}[INFO] Backing up and updating /etc/network/interfaces...${RESET}"
       mkdir -p "$BACKUP_DIR"
-      if [ -f /etc/network/interfaces ]; then
-        echo "Backing up /etc/network/interfaces to $BACKUP_DIR/network_interfaces.bak"
-        cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
-      fi
-
-      # Append new lines for VirtualBox NAT
+      cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
       sudo tee -a /etc/network/interfaces <<EOF
 
 # Primary network interface
@@ -358,29 +300,23 @@ iface eth0 inet dhcp
 auto eth1
 iface eth1 inet dhcp
 EOF
-      echo "Appended VirtualBox network block to /etc/network/interfaces."
-
-      echo "Restarting network services..."
       sudo systemctl restart networking.service
     else
-      echo "It appears the VirtualBox block is already in /etc/network/interfaces."
-      echo "Skipping backup and append."
+      echo -e "${YELLOW}[WARN] Network configuration for VirtualBox already exists. Skipping...${RESET}"
     fi
   else
-    echo "VMware or no virtualization detected. Skipping network configuration..."
+    echo -e "${YELLOW}[WARN] VirtualBox not detected. Skipping network configuration...${RESET}"
   fi
 }
 
-function do_network_restore() {
-  echo "----- Restoring Network Configuration -----"
+do_network_restore() {
+  echo -e "${CYAN}[INFO] Restoring network configuration...${RESET}"
   if [ -f "$BACKUP_DIR/network_interfaces.bak" ]; then
-    echo "Restoring /etc/network/interfaces from backup..."
     cp "$BACKUP_DIR/network_interfaces.bak" /etc/network/interfaces
-    echo "Restarting network services..."
-    sudo systemctl restart networking.service
+    echo -e "${GREEN}[SUCCESS] Restored network configuration.${RESET}"
+    systemctl restart networking.service
   else
-    echo "No backup file found at $BACKUP_DIR/network_interfaces.bak."
-    echo "Cannot restore network configuration."
+    echo -e "${RED}[ERROR] No backup found at $BACKUP_DIR/network_interfaces.bak. Skipping.${RESET}"
   fi
 }
 
@@ -388,63 +324,42 @@ function do_network_restore() {
 # 11. Zsh Configuration + Restore
 ###############################################################################
 
-function do_zsh() {
-  echo "----- Zsh Configuration -----"
+do_zsh() {
+  echo -e "${CYAN}[INFO] Configuring Zsh...${RESET}"
+
   local ZSH_HISTORY_SOURCE="$SOLVED_BOXES_DEST/final_combined_history_01_2025.txt"
   local ZSHRC_SOURCE="$SOLVED_BOXES_DEST/latest_zshrc_01_2025"
   local ZSH_HISTORY_DEST="/home/$CURRENT_USER/.zsh_history"
   local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
 
-  # Create backup dir if needed
   mkdir -p "$BACKUP_DIR"
 
-  # If .zshrc exists, back it up before overwriting
   if [ -f "$ZSHRC_DEST" ]; then
-    echo "Backing up $ZSHRC_DEST to $BACKUP_DIR/zshrc.bak"
+    echo -e "${CYAN}[INFO] Backing up existing .zshrc...${RESET}"
     cp "$ZSHRC_DEST" "$BACKUP_DIR/zshrc.bak"
   fi
 
-  # We need Solved_Boxes_Data for the zsh config. If not found, clone only that repo.
-  if [ ! -d "$SOLVED_BOXES_DEST/.git" ]; then
-    echo "Solved_Boxes_Data not present at $SOLVED_BOXES_DEST."
-    echo "Cloning it now to proceed with Zsh updates..."
-    clone_private_repo "$SOLVED_BOXES_REPO" "$SOLVED_BOXES_DEST"
-  fi
-
-  # Merge zsh history
   if [ -f "$ZSH_HISTORY_SOURCE" ]; then
-    echo "Merging zsh history from $ZSH_HISTORY_SOURCE into $ZSH_HISTORY_DEST..."
+    echo -e "${CYAN}[INFO] Merging Zsh history...${RESET}"
     cat "$ZSH_HISTORY_SOURCE" >> "$ZSH_HISTORY_DEST"
     sort -u "$ZSH_HISTORY_DEST" -o "$ZSH_HISTORY_DEST"
-  else
-    echo "Zsh history source file not found. Skipping history merge."
   fi
 
-  # Overwrite .zshrc
   if [ -f "$ZSHRC_SOURCE" ]; then
-    echo "Overwriting .zshrc with the latest configuration from $ZSHRC_SOURCE..."
+    echo -e "${CYAN}[INFO] Updating .zshrc...${RESET}"
     cp "$ZSHRC_SOURCE" "$ZSHRC_DEST"
-  else
-    echo "Zsh configuration file source not found. Skipping .zshrc update."
+    sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
   fi
-
-  # Make zsh changes active
-  echo "Sourcing updated .zshrc..."
-  sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
 }
 
-function do_zsh_restore() {
-  echo "----- Restoring Zsh Configuration -----"
+do_zsh_restore() {
+  echo -e "${CYAN}[INFO] Restoring Zsh configuration...${RESET}"
   local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
   if [ -f "$BACKUP_DIR/zshrc.bak" ]; then
-    echo "Restoring .zshrc from backup..."
     cp "$BACKUP_DIR/zshrc.bak" "$ZSHRC_DEST"
-    chown "$CURRENT_USER":"$CURRENT_USER" "$ZSHRC_DEST"
-    # Optionally re-source it
-    sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
+    echo -e "${GREEN}[SUCCESS] Restored Zsh configuration.${RESET}"
   else
-    echo "No .zshrc backup found at $BACKUP_DIR/zshrc.bak."
-    echo "Cannot restore zsh configuration."
+    echo -e "${RED}[ERROR] No backup found for Zsh configuration.${RESET}"
   fi
 }
 
@@ -452,69 +367,32 @@ function do_zsh_restore() {
 # 12. Main Execution Flow
 ###############################################################################
 
-# 1) Repos first, if requested
 if [ "$REPOS" = true ]; then
   do_repos
 fi
 
-# 2) Then pimpmykali, if requested
 if [ "$PMPK" = true ]; then
   do_pmpk
 fi
 
-# 3) Tools
 if [ "$TOOLS" = true ]; then
   do_tools
 fi
 
-# 4) Network
 if [ "$NETWORK" = true ]; then
   do_network
 fi
 
-# 4a) Network Restore
 if [ "$NETWORK_RESTORE" = true ]; then
   do_network_restore
 fi
 
-# 5) Zsh
 if [ "$ZSH_UPDATE" = true ]; then
   do_zsh
 fi
 
-# 5a) Zsh Restore
 if [ "$ZSH_RESTORE" = true ]; then
   do_zsh_restore
 fi
 
-###############################################################################
-# 13. Reinstall needrestart & Restore Config
-###############################################################################
-
-echo "Reinstalling needrestart now that main tasks are complete..."
-apt-get update -qq
-apt-get install -y needrestart
-
-# If we had a backup, restore it
-if [ -f "$NEEDRESTART_BACKUP" ]; then
-  echo "Restoring original needrestart config from backup..."
-  cp "$NEEDRESTART_BACKUP" "$NEEDRESTART_CONF"
-  # (Optional) Re-apply auto-restart lines if desired:
-  # sed -i 's/^#*\$nrconf{restart} = .*/\$nrconf{restart} = "a";/' "$NEEDRESTART_CONF"
-fi
-
-# Final message
-echo "--------------------------------------------------------------------"
-echo "Script Execution Complete!"
-echo "--------------------------------------------------------------------"
-echo "Selected steps:"
-echo "  --repos:           $REPOS"
-echo "  --pmpk:            $PMPK"
-echo "  --tools:           $TOOLS"
-echo "  --network:         $NETWORK"
-echo "  --zsh:             $ZSH_UPDATE"
-echo "  --network-restore: $NETWORK_RESTORE"
-echo "  --zsh-restore:     $ZSH_RESTORE"
-echo "  --all:             $DO_ALL"
-echo "--------------------------------------------------------------------"
-echo "Done."
+echo -e "${GREEN}[SUCCESS] Script execution completed.${RESET}"
