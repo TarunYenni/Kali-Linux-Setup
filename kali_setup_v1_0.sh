@@ -250,7 +250,11 @@ do_tools() {
     tmux
     awscli
     fzf
+    libreoffice
     zsh-autosuggestions
+    remmina
+    remmina-plugin-rdp
+    remmina-plugin-secret
   )
 
   for tool in "${tools[@]}"; do
@@ -273,10 +277,6 @@ do_tools() {
   pipx install arjun
   pipx install git+https://github.com/Tib3rius/AutoRecon.git
   pipx ensurepath
-
-  # Other GUI tools
-  sudo apt-get install -y -q remmina remmina-plugin-rdp remmina-plugin-secret
-  sudo apt-get install -y -q libreoffice
 }
 
 ###############################################################################
