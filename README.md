@@ -26,6 +26,27 @@ A robust and customizable Bash script to streamline the setup and configuration 
 ---
 
 ## **Usage**
+```bash
+Usage:
+  sudo ./kali_setup.sh [OPTIONS]
+
+Options:
+  --pmpk             Only run PimpmyKali setup (N -> Y).
+  --repos            Only clone both private repos (Solved_Boxes_Data + My_Pentest_Kit).
+  --tools            Only install the additional tools.
+  --network          Only configure network (VirtualBox detection).
+  --zsh              Only merge zsh history and overwrite .zshrc (requires Solved_Boxes_Data).
+  --network-restore  Restore /etc/network/interfaces from a previous backup.
+  --zsh-restore      Restore the original .zshrc from a previous backup.
+  --all              Run all install/modify steps (pmpk, repos, tools, network, zsh).
+  -h, --help         Show this help message and exit.
+
+Examples:
+  sudo ./kali_setup.sh --pmpk
+  sudo ./kali_setup.sh --repos --zsh
+  sudo ./kali_setup.sh --network-restore
+  sudo ./kali_setup.sh --all
+```
 
 ### **Prerequisites**
 - Kali Linux with `sudo` privileges.
