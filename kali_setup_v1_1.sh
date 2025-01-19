@@ -73,7 +73,7 @@ done
 # If --all is chosen, set all flags to true
 if [ "$DO_ALL" = true ]; then
   PMPK=true
-  REPOS=true
+  REPOS=true        # <-- Make sure REPOS is set to true under --all
   TOOLS=true
   NETWORK=true
   ZSH_UPDATE=true
@@ -131,18 +131,21 @@ chown "$CURRENT_USER":"$CURRENT_USER" /opt || true
 chown "$CURRENT_USER":"$CURRENT_USER" /opt/* 2>/dev/null || true
 
 ###############################################################################
-# 5. Non-Interactive Service Restarts (Always Execute)
+# 5. Non-Interactive Service Restarts - Remove needrestart Temporarily
 ###############################################################################
 
-echo "Configuring environment for non-interactive service restarts..."
-export DEBIAN_FRONTEND=noninteractive
+NEEDRESTART_CONF="/etc/needrestart/needrestart.conf"
+NEEDRESTART_BACKUP="/tmp/needrestart.conf.bak"
 
-apt-get install -y -q debconf-utils needrestart
-echo '* libraries/restart-without-asking boolean true' | debconf-set-selections
+# Backup current needrestart.conf if it exists
+if [ -f "$NEEDRESTART_CONF" ]; then
+  echo "Backing up existing needrestart config to $NEEDRESTART_BACKUP"
+  cp "$NEEDRESTART_CONF" "$NEEDRESTART_BACKUP"
+fi
 
-# Adjust needrestart config
-sed -i 's/#\$nrconf{restart} = .*/\$nrconf{restart} = "a";/' /etc/needrestart/needrestart.conf
-echo '* libraries/restart-without-asking boolean true' | debconf-set-selections
+echo "Purging 'needrestart' to suppress any 'relogin/restart required' pop-ups..."
+apt-get purge -y needrestart || true
+apt-get autoremove -y
 
 ###############################################################################
 # 6. Helper: Clone a Specific Private Repository
@@ -213,7 +216,7 @@ do_tools() {
   # Tools to be installed
   tools=(
     faketime
-    vs-code              # May fail on a clean Kali without external repos
+    vs-code
     linux-exploit-suggester
     bloodhound.py
     thunderbird
@@ -352,29 +355,45 @@ do_zsh() {
 # 12. Main Execution Flow
 ###############################################################################
 
-# --pmpk
-if [ "$PMPK" = true ]; then
-  do_pmpk
-fi
-
-# --repos
+# 1) Repos first, if requested
 if [ "$REPOS" = true ]; then
   do_repos
 fi
 
-# --tools
+# 2) Then pimpmykali, if requested
+if [ "$PMPK" = true ]; then
+  do_pmpk
+fi
+
+# 3) Tools
 if [ "$TOOLS" = true ]; then
   do_tools
 fi
 
-# --network
+# 4) Network
 if [ "$NETWORK" = true ]; then
   do_network
 fi
 
-# --zsh
+# 5) Zsh
 if [ "$ZSH_UPDATE" = true ]; then
   do_zsh
+fi
+
+###############################################################################
+# 13. Reinstall needrestart & Restore Config
+###############################################################################
+
+echo "Reinstalling needrestart now that main tasks are complete..."
+apt-get update -qq
+apt-get install -y needrestart
+
+# If we had a backup, restore it
+if [ -f "$NEEDRESTART_BACKUP" ]; then
+  echo "Restoring original needrestart config from backup..."
+  cp "$NEEDRESTART_BACKUP" "$NEEDRESTART_CONF"
+  # (Optional) Re-apply auto-restart lines if desired:
+  # sed -i 's/^#*\$nrconf{restart} = .*/\$nrconf{restart} = "a";/' "$NEEDRESTART_CONF"
 fi
 
 # Final message
@@ -382,8 +401,8 @@ echo "--------------------------------------------------------------------"
 echo "Script Execution Complete!"
 echo "--------------------------------------------------------------------"
 echo "Selected steps:"
-echo "  --pmpk:    $PMPK"
 echo "  --repos:   $REPOS"
+echo "  --pmpk:    $PMPK"
 echo "  --tools:   $TOOLS"
 echo "  --network: $NETWORK"
 echo "  --zsh:     $ZSH_UPDATE"
