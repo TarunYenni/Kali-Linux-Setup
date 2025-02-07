@@ -139,8 +139,8 @@ BACKUP_DIR="/opt/restore_configuration_kali"
 SOLVED_BOXES_REPO="github.com/TarunYenni/Dependences.git"
 SOLVED_BOXES_DEST="/home/$CURRENT_USER/Desktop/Dependences"
 
-#PENTEST_KIT_REPO="github.com/TarunYenni/My_Pentest_Kit"
-#PENTEST_KIT_DEST="/opt/My_Pentest_Kit"
+PENTEST_KIT_REPO="github.com/TarunYenni/My_Pentest_Kit"
+PENTEST_KIT_DEST="/opt/My_Pentest_Kit"
 
 ###############################################################################
 # 3. Prerequisite Checks (Always Execute)
