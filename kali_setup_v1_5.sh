@@ -327,7 +327,7 @@ do_network_restore() {
 do_zsh() {
   echo -e "${CYAN}[INFO] Configuring Zsh...${RESET}"
 
-  local ZSH_HISTORY_SOURCE="$SOLVED_BOXES_DEST/final_combined_history_01_2025.txt"
+  local ZSH_HISTORY_SOURCE="$SOLVED_BOXES_DEST/final_combined_history_11_2025.txt"
   local ZSHRC_SOURCE="$SOLVED_BOXES_DEST/latest_zshrc_01_2025"
   local ZSH_HISTORY_DEST="/home/$CURRENT_USER/.zsh_history"
   local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
