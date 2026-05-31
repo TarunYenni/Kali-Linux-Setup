@@ -1,0 +1,1502 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "any_setup_main_flow",
+        "label": "kali_setup_any Sequential Setup Flow",
+        "nodes": [
+          "kali_linux_setup_kali_setup_any_main_flow",
+          "kali_linux_setup_kali_setup_any_clone_repos",
+          "kali_linux_setup_kali_setup_any_pimpmykali_setup",
+          "kali_linux_setup_kali_setup_any_tools_install",
+          "kali_linux_setup_kali_setup_any_network_config",
+          "kali_linux_setup_kali_setup_any_zsh_config"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "kali_setup_any.sh"
+      },
+      {
+        "id": "v1_5_setup_main_flow",
+        "label": "kali_setup_v1_5 Sequential Setup Flow",
+        "nodes": [
+          "kali_linux_setup_kali_setup_v1_5_main_flow",
+          "kali_linux_setup_kali_setup_v1_5_clone_repos",
+          "kali_linux_setup_kali_setup_v1_5_pimpmykali_setup",
+          "kali_linux_setup_kali_setup_v1_5_tools_install",
+          "kali_linux_setup_kali_setup_v1_5_network_config",
+          "kali_linux_setup_kali_setup_v1_5_zsh_config"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "kali_setup_v1_5.sh"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "kali_setup_any.sh",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "kali_setup_any_sh",
+      "community": 0,
+      "norm_label": "kali_setup_any.sh"
+    },
+    {
+      "label": "kali_setup_any.sh script",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "community": 0,
+      "norm_label": "kali_setup_any.sh script"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L45",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_usage",
+      "community": 0,
+      "norm_label": "usage()"
+    },
+    {
+      "label": "check_prerequisites()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L149",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_check_prerequisites",
+      "community": 0,
+      "norm_label": "check_prerequisites()"
+    },
+    {
+      "label": "clone_private_repo()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L201",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_clone_private_repo",
+      "community": 0,
+      "norm_label": "clone_private_repo()"
+    },
+    {
+      "label": "do_repos()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L226",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_repos",
+      "community": 0,
+      "norm_label": "do_repos()"
+    },
+    {
+      "label": "do_pmpk()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L236",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_pmpk",
+      "community": 0,
+      "norm_label": "do_pmpk()"
+    },
+    {
+      "label": "do_tools()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L257",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_tools",
+      "community": 0,
+      "norm_label": "do_tools()"
+    },
+    {
+      "label": "do_network()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L281",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_network",
+      "community": 0,
+      "norm_label": "do_network()"
+    },
+    {
+      "label": "do_network_restore()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L312",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_network_restore",
+      "community": 0,
+      "norm_label": "do_network_restore()"
+    },
+    {
+      "label": "do_zsh()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L327",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_zsh",
+      "community": 0,
+      "norm_label": "do_zsh()"
+    },
+    {
+      "label": "do_zsh_restore()",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L355",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_any_do_zsh_restore",
+      "community": 0,
+      "norm_label": "do_zsh_restore()"
+    },
+    {
+      "label": "kali_setup_v1_5.sh",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "kali_setup_v1_5_sh",
+      "community": 1,
+      "norm_label": "kali_setup_v1_5.sh"
+    },
+    {
+      "label": "kali_setup_v1_5.sh script",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "community": 1,
+      "norm_label": "kali_setup_v1_5.sh script"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L45",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_usage",
+      "community": 1,
+      "norm_label": "usage()"
+    },
+    {
+      "label": "check_prerequisites()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L149",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_check_prerequisites",
+      "community": 1,
+      "norm_label": "check_prerequisites()"
+    },
+    {
+      "label": "clone_private_repo()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L201",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_clone_private_repo",
+      "community": 1,
+      "norm_label": "clone_private_repo()"
+    },
+    {
+      "label": "do_repos()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L226",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_repos",
+      "community": 1,
+      "norm_label": "do_repos()"
+    },
+    {
+      "label": "do_pmpk()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L236",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_pmpk",
+      "community": 1,
+      "norm_label": "do_pmpk()"
+    },
+    {
+      "label": "do_tools()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L257",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_tools",
+      "community": 1,
+      "norm_label": "do_tools()"
+    },
+    {
+      "label": "do_network()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L281",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_network",
+      "community": 1,
+      "norm_label": "do_network()"
+    },
+    {
+      "label": "do_network_restore()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L312",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_network_restore",
+      "community": 1,
+      "norm_label": "do_network_restore()"
+    },
+    {
+      "label": "do_zsh()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L327",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_zsh",
+      "community": 1,
+      "norm_label": "do_zsh()"
+    },
+    {
+      "label": "do_zsh_restore()",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L355",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "kali_linux_setup_kali_setup_v1_5_do_zsh_restore",
+      "community": 1,
+      "norm_label": "do_zsh_restore()"
+    },
+    {
+      "label": "Prerequisite Checks (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L149-170",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_prerequisite_checks",
+      "community": 5,
+      "norm_label": "prerequisite checks (any)"
+    },
+    {
+      "label": "Adjust /opt Ownership (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L176-178",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_opt_ownership",
+      "community": 6,
+      "norm_label": "adjust /opt ownership (any)"
+    },
+    {
+      "label": "Purge needrestart (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L184-195",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_purge_needrestart",
+      "community": 4,
+      "norm_label": "purge needrestart (any)"
+    },
+    {
+      "label": "Clone Private Repos (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L226-230",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_clone_repos",
+      "community": 2,
+      "norm_label": "clone private repos (any)"
+    },
+    {
+      "label": "PimpmyKali Setup (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L236-251",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_pimpmykali_setup",
+      "community": 4,
+      "norm_label": "pimpmykali setup (any)"
+    },
+    {
+      "label": "Tools Installation (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L257-275",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_tools_install",
+      "community": 3,
+      "norm_label": "tools installation (any)"
+    },
+    {
+      "label": "Network Configuration (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L281-321",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_network_config",
+      "community": 2,
+      "norm_label": "network configuration (any)"
+    },
+    {
+      "label": "Zsh Configuration (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L327-364",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_zsh_config",
+      "community": 2,
+      "norm_label": "zsh configuration (any)"
+    },
+    {
+      "label": "Main Execution Flow (any)",
+      "file_type": "code",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L370-398",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_main_flow",
+      "community": 2,
+      "norm_label": "main execution flow (any)"
+    },
+    {
+      "label": "Dependences Private Repo",
+      "file_type": "concept",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L139-140",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_any_dependences_repo",
+      "community": 2,
+      "norm_label": "dependences private repo"
+    },
+    {
+      "label": "Prerequisite Checks (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L149-170",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_prerequisite_checks",
+      "community": 7,
+      "norm_label": "prerequisite checks (v1.5)"
+    },
+    {
+      "label": "Purge needrestart (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L184-195",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_purge_needrestart",
+      "community": 8,
+      "norm_label": "purge needrestart (v1.5)"
+    },
+    {
+      "label": "Clone Private Repos (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L226-230",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_clone_repos",
+      "community": 2,
+      "norm_label": "clone private repos (v1.5)"
+    },
+    {
+      "label": "PimpmyKali Setup (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L236-251",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_pimpmykali_setup",
+      "community": 4,
+      "norm_label": "pimpmykali setup (v1.5)"
+    },
+    {
+      "label": "Tools Installation (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L257-275",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_tools_install",
+      "community": 3,
+      "norm_label": "tools installation (v1.5)"
+    },
+    {
+      "label": "Network Configuration (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L281-321",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_network_config",
+      "community": 3,
+      "norm_label": "network configuration (v1.5)"
+    },
+    {
+      "label": "Zsh Configuration (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L327-364",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_zsh_config",
+      "community": 2,
+      "norm_label": "zsh configuration (v1.5)"
+    },
+    {
+      "label": "Main Execution Flow (v1.5)",
+      "file_type": "code",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L370-398",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "community": 3,
+      "norm_label": "main execution flow (v1.5)"
+    },
+    {
+      "label": "Solved_Boxes_Data Private Repo",
+      "file_type": "concept",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L139-140",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_kali_setup_v1_5_solved_boxes_repo",
+      "community": 2,
+      "norm_label": "solved_boxes_data private repo"
+    },
+    {
+      "label": "PimpmyKali (Dewalt-arch)",
+      "file_type": "concept",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L132",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_pimpmykali",
+      "community": 4,
+      "norm_label": "pimpmykali (dewalt-arch)"
+    },
+    {
+      "label": "My_Pentest_Kit Private Repo",
+      "file_type": "concept",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L142-143",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_my_pentest_kit",
+      "community": 2,
+      "norm_label": "my_pentest_kit private repo"
+    },
+    {
+      "label": "Config Backup/Restore Mechanism",
+      "file_type": "concept",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L136",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_backup_restore_concept",
+      "community": 2,
+      "norm_label": "config backup/restore mechanism"
+    },
+    {
+      "label": "Kali Setup Script Overview",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1-26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_readme_overview",
+      "community": 3,
+      "norm_label": "kali setup script overview"
+    },
+    {
+      "label": "Modular Execution Options",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L22-49",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_readme_modular_execution",
+      "community": 3,
+      "norm_label": "modular execution options"
+    },
+    {
+      "label": "Pentest Tools Feature",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9-12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_readme_tools_feature",
+      "community": 3,
+      "norm_label": "pentest tools feature"
+    },
+    {
+      "label": "Zsh Customization Feature",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L18-20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_readme_zsh_feature",
+      "community": 2,
+      "norm_label": "zsh customization feature"
+    },
+    {
+      "label": "VirtualBox Network Feature",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "kali_linux_setup_readme_network_feature",
+      "community": 3,
+      "norm_label": "virtualbox network feature"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L149",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_check_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_clone_private_repo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L312",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_network_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_pmpk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L226",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_repos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_tools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L327",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_zsh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L355",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_do_zsh_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "kali_setup_any_sh",
+      "target": "kali_linux_setup_kali_setup_any_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L170",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_check_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L383",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L387",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_network_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L375",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_pmpk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L371",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_repos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L379",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_tools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L391",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_zsh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L395",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_do_zsh_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L72",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_any_sh__entry",
+      "target": "kali_linux_setup_kali_setup_any_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L228",
+      "weight": 1.0,
+      "context": "call",
+      "source": "kali_linux_setup_kali_setup_any_do_repos",
+      "target": "kali_linux_setup_kali_setup_any_clone_private_repo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L149",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_check_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_clone_private_repo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L312",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_network_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_pmpk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L226",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_repos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_tools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L327",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_zsh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L355",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_zsh_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "kali_setup_v1_5_sh",
+      "target": "kali_linux_setup_kali_setup_v1_5_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L170",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_check_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L383",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L387",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_network_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L375",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_pmpk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L371",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_repos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L379",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_tools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L391",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_zsh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L395",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_do_zsh_restore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L72",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_blackarrow_desktop_kali_linux_setup_kali_setup_v1_5_sh__entry",
+      "target": "kali_linux_setup_kali_setup_v1_5_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L228",
+      "weight": 1.0,
+      "context": "call",
+      "source": "kali_linux_setup_kali_setup_v1_5_do_repos",
+      "target": "kali_linux_setup_kali_setup_v1_5_clone_private_repo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_pimpmykali_setup",
+      "target": "kali_linux_setup_kali_setup_any_purge_needrestart"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_clone_repos",
+      "target": "kali_linux_setup_kali_setup_any_dependences_repo"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_clone_repos",
+      "target": "kali_linux_setup_my_pentest_kit"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_any_clone_repos"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L375",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_any_pimpmykali_setup"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L244-250",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_pimpmykali_setup",
+      "target": "kali_linux_setup_pimpmykali"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L379",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_any_tools_install"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_tools_install",
+      "target": "kali_linux_setup_kali_setup_v1_5_tools_install"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L383",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_any_network_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L291-292",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_network_config",
+      "target": "kali_linux_setup_backup_restore_concept"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_network_config",
+      "target": "kali_linux_setup_kali_setup_v1_5_network_config"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L391",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_any_zsh_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L335-339",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_zsh_config",
+      "target": "kali_linux_setup_backup_restore_concept"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh",
+      "source_location": "L330-331",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_zsh_config",
+      "target": "kali_linux_setup_kali_setup_any_dependences_repo"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_zsh_config",
+      "target": "kali_linux_setup_kali_setup_v1_5_zsh_config"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_main_flow"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "kali_setup_any.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_any_dependences_repo",
+      "target": "kali_linux_setup_kali_setup_v1_5_solved_boxes_repo"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_clone_repos",
+      "target": "kali_linux_setup_kali_setup_v1_5_solved_boxes_repo"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_clone_repos",
+      "target": "kali_linux_setup_my_pentest_kit"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_clone_repos"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L375",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_pimpmykali_setup"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L244-250",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_pimpmykali_setup",
+      "target": "kali_linux_setup_pimpmykali"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L379",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_tools_install"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "L9-12",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_tools_feature",
+      "target": "kali_linux_setup_kali_setup_v1_5_tools_install"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L383",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_network_config"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_network_feature",
+      "target": "kali_linux_setup_kali_setup_v1_5_network_config"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L391",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_main_flow",
+      "target": "kali_linux_setup_kali_setup_v1_5_zsh_config"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh",
+      "source_location": "L330-331",
+      "weight": 1.0,
+      "source": "kali_linux_setup_kali_setup_v1_5_zsh_config",
+      "target": "kali_linux_setup_kali_setup_v1_5_solved_boxes_repo"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "L18-20",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_zsh_feature",
+      "target": "kali_linux_setup_kali_setup_v1_5_zsh_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "L30-49",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_modular_execution",
+      "target": "kali_linux_setup_kali_setup_v1_5_main_flow"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "L1-3",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_overview",
+      "target": "kali_linux_setup_kali_setup_v1_5_main_flow"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L22-25",
+      "weight": 1.0,
+      "source": "kali_linux_setup_readme_modular_execution",
+      "target": "kali_linux_setup_readme_overview"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "any_setup_main_flow",
+      "label": "kali_setup_any Sequential Setup Flow",
+      "nodes": [
+        "kali_linux_setup_kali_setup_any_main_flow",
+        "kali_linux_setup_kali_setup_any_clone_repos",
+        "kali_linux_setup_kali_setup_any_pimpmykali_setup",
+        "kali_linux_setup_kali_setup_any_tools_install",
+        "kali_linux_setup_kali_setup_any_network_config",
+        "kali_linux_setup_kali_setup_any_zsh_config"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_any.sh"
+    },
+    {
+      "id": "v1_5_setup_main_flow",
+      "label": "kali_setup_v1_5 Sequential Setup Flow",
+      "nodes": [
+        "kali_linux_setup_kali_setup_v1_5_main_flow",
+        "kali_linux_setup_kali_setup_v1_5_clone_repos",
+        "kali_linux_setup_kali_setup_v1_5_pimpmykali_setup",
+        "kali_linux_setup_kali_setup_v1_5_tools_install",
+        "kali_linux_setup_kali_setup_v1_5_network_config",
+        "kali_linux_setup_kali_setup_v1_5_zsh_config"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "kali_setup_v1_5.sh"
+    }
+  ],
+  "built_at_commit": "e7f52bc6260cd142b56ddff06fd6a24ae801436d"
+}
