@@ -28,6 +28,14 @@ YELLOW='\e[33m'
 CYAN='\e[36m'
 RESET='\e[0m'
 
+# Catch unset variables and broken pipes early. We deliberately do NOT use
+# 'set -e' so that one failed package install does not abort the whole run.
+set -uo pipefail
+
+# Make every apt/dpkg call non-interactive so unattended runs never hang.
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+
 ###############################################################################
 # 1. Parse Arguments
 ###############################################################################
@@ -131,9 +139,13 @@ fi
 
 REPO_URL="https://github.com/Dewalt-arch/pimpmykali.git"
 INSTALL_DIR="/opt/pimpmykali"
-CURRENT_USER=$(logname)
+CURRENT_USER=$(logname 2>/dev/null || echo "${SUDO_USER:-root}")
 
 BACKUP_DIR="/opt/restore_configuration_kali"
+
+# VirtualBox network config lives in its own drop-in so enabling/restoring it is
+# just creating/deleting one file, instead of editing the main interfaces file.
+NETWORK_DROPIN="/etc/network/interfaces.d/vbox-kali-setup.cfg"
 
 # Private Repos
 SOLVED_BOXES_REPO="github.com/TarunYenni/Dependences.git"
@@ -154,6 +166,11 @@ check_prerequisites() {
     echo -e "${RED}[ERROR] This script must be run with sudo privileges. Exiting.${RESET}"
     exit 1
   fi
+
+  # Refresh package lists once per run so later installs do not fail on stale
+  # metadata (especially when a single --tools/--repos step is run on its own).
+  echo -e "${CYAN}[INFO] Refreshing package lists...${RESET}"
+  apt-get update -q || echo -e "${YELLOW}[WARN] apt-get update reported errors; continuing.${RESET}"
 
   # Ensure essential tools
   essential_tools=(git wget curl dmidecode)
@@ -178,21 +195,29 @@ chown "$CURRENT_USER":"$CURRENT_USER" /opt || true
 chown "$CURRENT_USER":"$CURRENT_USER" /opt/* 2>/dev/null || true
 
 ###############################################################################
-# 5. Non-Interactive Service Restarts - Remove needrestart Temporarily
+# 5. Non-Interactive Service Restarts - Silence needrestart (restored on exit)
 ###############################################################################
 
-NEEDRESTART_CONF="/etc/needrestart/needrestart.conf"
-NEEDRESTART_BACKUP="/tmp/needrestart.conf.bak"
+# Instead of purging needrestart (which left the system permanently altered and
+# a dead /tmp backup behind), drop in a temporary override that auto-answers its
+# restart prompts. A trap removes it on ANY exit, so the system is left as found.
+NEEDRESTART_DROPIN="/etc/needrestart/conf.d/00-kali-setup-noninteractive.conf"
 
-# Backup current needrestart.conf if it exists
-if [ -f "$NEEDRESTART_CONF" ]; then
-  echo -e "${CYAN}[INFO] Backing up existing needrestart config to $NEEDRESTART_BACKUP${RESET}"
-  cp "$NEEDRESTART_CONF" "$NEEDRESTART_BACKUP"
+cleanup() {
+  if [ -f "$NEEDRESTART_DROPIN" ]; then
+    rm -f "$NEEDRESTART_DROPIN"
+    echo -e "${CYAN}[INFO] Restored needrestart configuration.${RESET}"
+  fi
+}
+trap cleanup EXIT
+
+if [ -d /etc/needrestart ]; then
+  echo -e "${YELLOW}[WARN] Temporarily silencing 'needrestart' service-restart pop-ups...${RESET}"
+  mkdir -p /etc/needrestart/conf.d
+  printf '$nrconf{restart} = "a";\n$nrconf{kernelhints} = 0;\n' > "$NEEDRESTART_DROPIN"
+else
+  echo -e "${CYAN}[INFO] needrestart not present; nothing to silence.${RESET}"
 fi
-
-echo -e "${YELLOW}[WARN] Purging 'needrestart' to suppress pop-ups...${RESET}"
-apt-get purge -y needrestart || true
-apt-get autoremove -y
 
 ###############################################################################
 # 6. Helper: Clone a Specific Private Repository
@@ -203,7 +228,7 @@ clone_private_repo() {
   local DEST_DIR="$2"
 
   # If GitHub creds not exported, prompt the user
-  if [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_TOKEN" ]; then
+  if [ -z "${GITHUB_USERNAME:-}" ] || [ -z "${GITHUB_TOKEN:-}" ]; then
     read -r -p "$(echo -e "${YELLOW}Enter your GitHub username: ${RESET}")" GITHUB_USERNAME
     read -r -s -p "$(echo -e "${YELLOW}Enter your personal access token: ${RESET}")" GITHUB_TOKEN
     echo  # move to next line after -s prompt
@@ -216,6 +241,11 @@ clone_private_repo() {
   else
     echo -e "${CYAN}[INFO] Cloning the private repository into $DEST_DIR...${RESET}"
     sudo -u "$CURRENT_USER" bash -c "git clone 'https://$GITHUB_USERNAME:$GITHUB_TOKEN@$REPO_URL' '$DEST_DIR'"
+    # Strip the embedded PAT from the stored remote so the token is not left
+    # behind in plaintext inside .git/config.
+    if [ -d "$DEST_DIR/.git" ]; then
+      sudo -u "$CURRENT_USER" git -C "$DEST_DIR" remote set-url origin "https://$REPO_URL"
+    fi
   fi
 }
 
@@ -266,12 +296,22 @@ do_tools() {
     peass tmux awscli fzf libreoffice zsh-autosuggestions
   )
 
-  for tool in "${tools[@]}"; do
-    echo -e "${YELLOW}[INFO] Installing $tool...${RESET}"
-    apt-get install -y -q "$tool"
-  done
-
-  echo -e "${GREEN}[SUCCESS] Tools installation completed.${RESET}"
+  # Install everything in a single transaction - far faster than one apt call
+  # per package (no repeated dependency resolution / trigger processing).
+  if apt-get install -y -q "${tools[@]}"; then
+    echo -e "${GREEN}[SUCCESS] Tools installation completed.${RESET}"
+  else
+    echo -e "${YELLOW}[WARN] Batch install failed; retrying individually to isolate the offenders...${RESET}"
+    local failed=()
+    for tool in "${tools[@]}"; do
+      apt-get install -y -q "$tool" || failed+=("$tool")
+    done
+    if [ "${#failed[@]}" -gt 0 ]; then
+      echo -e "${RED}[WARN] These packages could not be installed: ${failed[*]}${RESET}"
+    else
+      echo -e "${GREEN}[SUCCESS] Tools installation completed (after individual retry).${RESET}"
+    fi
+  fi
 }
 
 ###############################################################################
@@ -284,14 +324,30 @@ do_network() {
   local VIRTUALIZATION
   VIRTUALIZATION=$(sudo dmidecode | grep -i product | grep -E "VirtualBox|VMware" || true)
 
-  if echo "$VIRTUALIZATION" | grep -iq "VirtualBox"; then
-    echo -e "${CYAN}[INFO] VirtualBox detected. Configuring network interfaces...${RESET}"
-    if ! grep -Fq "auto eth1" /etc/network/interfaces; then
-      echo -e "${CYAN}[INFO] Backing up and updating /etc/network/interfaces...${RESET}"
-      mkdir -p "$BACKUP_DIR"
-      cp /etc/network/interfaces "$BACKUP_DIR/network_interfaces.bak"
-      sudo tee -a /etc/network/interfaces <<EOF
+  if ! echo "$VIRTUALIZATION" | grep -iq "VirtualBox"; then
+    echo -e "${YELLOW}[WARN] VirtualBox not detected. Skipping network configuration...${RESET}"
+    return 0
+  fi
 
+  echo -e "${CYAN}[INFO] VirtualBox detected. Configuring network interfaces...${RESET}"
+
+  # Already configured? (either our drop-in, or a legacy in-file edit)
+  if [ -f "$NETWORK_DROPIN" ] || grep -Fqs "auto eth1" /etc/network/interfaces; then
+    echo -e "${YELLOW}[WARN] Network configuration for VirtualBox already exists. Skipping...${RESET}"
+    return 0
+  fi
+
+  echo -e "${CYAN}[INFO] Writing VirtualBox interface config to $NETWORK_DROPIN...${RESET}"
+  mkdir -p /etc/network/interfaces.d
+
+  # Make sure the main file actually sources the drop-in directory (Kali's
+  # default does, but a customized box might not).
+  if ! grep -Fqs "source /etc/network/interfaces.d/*" /etc/network/interfaces; then
+    echo "source /etc/network/interfaces.d/*" >> /etc/network/interfaces
+  fi
+
+  cat > "$NETWORK_DROPIN" <<EOF
+# Added by kali_setup_any.sh for VirtualBox NAT-network setup.
 # Primary network interface
 auto eth0
 iface eth0 inet dhcp
@@ -300,23 +356,31 @@ iface eth0 inet dhcp
 auto eth1
 iface eth1 inet dhcp
 EOF
-      sudo systemctl restart networking.service
-    else
-      echo -e "${YELLOW}[WARN] Network configuration for VirtualBox already exists. Skipping...${RESET}"
-    fi
-  else
-    echo -e "${YELLOW}[WARN] VirtualBox not detected. Skipping network configuration...${RESET}"
+
+  # ifupdown now owns eth0/eth1; if NetworkManager is also running it will treat
+  # them as unmanaged. Warn so the hand-off is not a surprise.
+  if systemctl is-active --quiet NetworkManager; then
+    echo -e "${YELLOW}[WARN] NetworkManager is active - eth0/eth1 will be handled by ifupdown, not NM.${RESET}"
   fi
+
+  systemctl restart networking.service
+  echo -e "${GREEN}[SUCCESS] VirtualBox network configuration applied.${RESET}"
 }
 
 do_network_restore() {
   echo -e "${CYAN}[INFO] Restoring network configuration...${RESET}"
-  if [ -f "$BACKUP_DIR/network_interfaces.bak" ]; then
+  if [ -f "$NETWORK_DROPIN" ]; then
+    rm -f "$NETWORK_DROPIN"
+    echo -e "${GREEN}[SUCCESS] Removed VirtualBox network drop-in.${RESET}"
+    systemctl restart networking.service
+  elif [ -f "$BACKUP_DIR/network_interfaces.bak" ]; then
+    # Backwards compatibility: undo an old-style full-file backup from a run
+    # made before the drop-in approach existed.
     cp "$BACKUP_DIR/network_interfaces.bak" /etc/network/interfaces
-    echo -e "${GREEN}[SUCCESS] Restored network configuration.${RESET}"
+    echo -e "${GREEN}[SUCCESS] Restored network configuration from legacy backup.${RESET}"
     systemctl restart networking.service
   else
-    echo -e "${RED}[ERROR] No backup found at $BACKUP_DIR/network_interfaces.bak. Skipping.${RESET}"
+    echo -e "${RED}[ERROR] No VirtualBox drop-in or legacy backup found. Nothing to restore.${RESET}"
   fi
 }
 
@@ -327,10 +391,16 @@ do_network_restore() {
 do_zsh() {
   echo -e "${CYAN}[INFO] Configuring Zsh...${RESET}"
 
-  local ZSH_HISTORY_SOURCE="$SOLVED_BOXES_DEST/final_combined_history_01_2025.txt"
-  local ZSHRC_SOURCE="$SOLVED_BOXES_DEST/latest_zshrc_01_2025"
+  # Auto-pick the newest dated history / zshrc in the repo so dropping a fresh
+  # snapshot in needs no code edit (-t = sort by mtime, newest first).
+  local ZSH_HISTORY_SOURCE ZSHRC_SOURCE
+  ZSH_HISTORY_SOURCE=$(ls -t "$SOLVED_BOXES_DEST"/final_combined_history_*.txt 2>/dev/null | head -n1)
+  ZSHRC_SOURCE=$(ls -t "$SOLVED_BOXES_DEST"/latest_zshrc_* 2>/dev/null | head -n1)
   local ZSH_HISTORY_DEST="/home/$CURRENT_USER/.zsh_history"
   local ZSHRC_DEST="/home/$CURRENT_USER/.zshrc"
+
+  [ -n "$ZSH_HISTORY_SOURCE" ] && echo -e "${CYAN}[INFO] Using history snapshot: $(basename "$ZSH_HISTORY_SOURCE")${RESET}"
+  [ -n "$ZSHRC_SOURCE" ]       && echo -e "${CYAN}[INFO] Using zshrc snapshot:   $(basename "$ZSHRC_SOURCE")${RESET}"
 
   mkdir -p "$BACKUP_DIR"
 
@@ -343,12 +413,17 @@ do_zsh() {
     echo -e "${CYAN}[INFO] Merging Zsh history...${RESET}"
     cat "$ZSH_HISTORY_SOURCE" >> "$ZSH_HISTORY_DEST"
     sort -u "$ZSH_HISTORY_DEST" -o "$ZSH_HISTORY_DEST"
+    # Files touched as root must end up owned by the user, or zsh ignores them.
+    chown "$CURRENT_USER":"$CURRENT_USER" "$ZSH_HISTORY_DEST"
   fi
 
   if [ -f "$ZSHRC_SOURCE" ]; then
     echo -e "${CYAN}[INFO] Updating .zshrc...${RESET}"
     cp "$ZSHRC_SOURCE" "$ZSHRC_DEST"
-    sudo -u "$CURRENT_USER" zsh -c "source ~/.zshrc"
+    chown "$CURRENT_USER":"$CURRENT_USER" "$ZSHRC_DEST"
+    # Sourcing in a throwaway subshell would not affect the user's shell, so
+    # just tell them how to load it.
+    echo -e "${YELLOW}[INFO] Open a new terminal or run 'exec zsh' to load the updated .zshrc.${RESET}"
   fi
 }
 
@@ -367,32 +442,36 @@ do_zsh_restore() {
 # 12. Main Execution Flow
 ###############################################################################
 
-if [ "$REPOS" = true ]; then
-  do_repos
-fi
+# Track the outcome of each stage so the run ends with a clear at-a-glance
+# summary instead of just scrolling apt output.
+declare -a SUMMARY=()
 
-if [ "$PMPK" = true ]; then
-  do_pmpk
-fi
+run_stage() {
+  # run_stage <label> <function-name>
+  local label="$1" fn="$2"
+  if "$fn"; then
+    SUMMARY+=("${GREEN}[ OK ]${RESET}  $label")
+  else
+    SUMMARY+=("${YELLOW}[WARN]${RESET}  $label (reported errors)")
+  fi
+}
 
-if [ "$TOOLS" = true ]; then
-  do_tools
-fi
+[ "$REPOS" = true ]           && run_stage "repos"            do_repos
+[ "$PMPK" = true ]            && run_stage "pimpmykali"       do_pmpk
+[ "$TOOLS" = true ]           && run_stage "tools"            do_tools
+[ "$NETWORK" = true ]         && run_stage "network"          do_network
+[ "$NETWORK_RESTORE" = true ] && run_stage "network-restore"  do_network_restore
+[ "$ZSH_UPDATE" = true ]      && run_stage "zsh"              do_zsh
+[ "$ZSH_RESTORE" = true ]     && run_stage "zsh-restore"      do_zsh_restore
 
-if [ "$NETWORK" = true ]; then
-  do_network
+echo
+echo -e "${CYAN}=================== Run Summary ===================${RESET}"
+if [ "${#SUMMARY[@]}" -eq 0 ]; then
+  echo -e "  No install/modify stages were selected."
+else
+  for line in "${SUMMARY[@]}"; do
+    echo -e "  $line"
+  done
 fi
-
-if [ "$NETWORK_RESTORE" = true ]; then
-  do_network_restore
-fi
-
-if [ "$ZSH_UPDATE" = true ]; then
-  do_zsh
-fi
-
-if [ "$ZSH_RESTORE" = true ]; then
-  do_zsh_restore
-fi
-
+echo -e "${CYAN}==================================================${RESET}"
 echo -e "${GREEN}[SUCCESS] Script execution completed.${RESET}"
