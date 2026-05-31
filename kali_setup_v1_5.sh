@@ -294,6 +294,16 @@ do_tools() {
     smbclient smbmap snmp sslscan sipvicious tnscmd10g whatweb wkhtmltopdf
     python3-venv libmnl libmnl-dev libnftnl libnftnl-dev libgconf-2-4
     peass tmux awscli fzf libreoffice zsh-autosuggestions
+    # AD / Windows
+    netexec evil-winrm responder ldap-utils
+    # Password attacks
+    hydra john hashcat
+    # Web
+    sqlmap ffuf nuclei
+    # Pivoting / shells
+    proxychains4 socat chisel netcat-traditional
+    # Exploitation
+    exploitdb
   )
 
   # Install everything in a single transaction - far faster than one apt call
